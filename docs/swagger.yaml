@@ -1,0 +1,432 @@
+definitions:
+  clients.AppError:
+    properties:
+      error_key:
+        type: string
+      log:
+        type: string
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
+  clients.SuccessRes:
+    properties:
+      data: {}
+      filter: {}
+      paging: {}
+    type: object
+  domain.ItemCreation:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: string
+    type: object
+  domain.ItemUpdate:
+    properties:
+      description:
+        type: string
+      status:
+        $ref: '#/definitions/domain.Status'
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  domain.Status:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - Deleted
+    - Active
+    - Done
+  domain.UserCreate:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  domain.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  domain.UserUpdate:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      updated_at:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /items:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint retrieves a list of all items.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of items retrieved successfully
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: Get all items
+      tags:
+      - Items
+    post:
+      consumes:
+      - application/json
+      description: This endpoint allows authenticated users to create an item.
+      parameters:
+      - description: Item creation payload
+        in: body
+        name: item
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ItemCreation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item successfully created
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: Create a new item
+      tags:
+      - Items
+  /items/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This endpoint deletes an item identified by its unique ID.
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item deleted successfully
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "400":
+          description: Invalid ID format or bad request
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "404":
+          description: Item not found
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: Delete an item
+      tags:
+      - Items
+    get:
+      consumes:
+      - application/json
+      description: This endpoint retrieves a single item by its unique identifier.
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item retrieved successfully
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "400":
+          description: Invalid ID format or bad request
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "404":
+          description: Item not found
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: Get an item by ID
+      tags:
+      - Items
+    put:
+      consumes:
+      - application/json
+      description: This endpoint allows updating the properties of an existing item
+        by its ID.
+      parameters:
+      - description: Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Item update payload
+        in: body
+        name: item
+        required: true
+        schema:
+          $ref: '#/definitions/domain.ItemUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Item updated successfully
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "400":
+          description: Invalid input or bad request
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "404":
+          description: Item not found
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: Update an item
+      tags:
+      - Items
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint retrieves a list of all registered users. It is accessible
+        only to admin users.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of users retrieved successfully
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "500":
+          description: Internal Server Error - Unexpected error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: Get all users
+      tags:
+      - Users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This endpoint deletes a user identified by their unique ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "400":
+          description: Invalid ID format or bad request
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "500":
+          description: Internal Server Error - Unexpected error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: Delete a user
+      tags:
+      - Users
+    get:
+      consumes:
+      - application/json
+      description: This endpoint retrieves a user by their unique ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User retrieved successfully
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "400":
+          description: Invalid ID format or bad request
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "500":
+          description: Internal Server Error - Unexpected error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: Get a user by ID
+      tags:
+      - Users
+    patch:
+      consumes:
+      - application/json
+      description: This endpoint allows updating the properties of an existing user
+        by their ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: User update payload
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UserUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated successfully
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "400":
+          description: Invalid input or bad request
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "500":
+          description: Internal Server Error - Unexpected error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: Update a user
+      tags:
+      - Users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint allows users to log in using their credentials and
+        receive an authentication token.
+      parameters:
+      - description: User login payload
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully logged in
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "400":
+          description: Bad Request - Invalid login credentials
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "500":
+          description: Internal Server Error - Unexpected error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: User login
+      tags:
+      - Users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint allows new users to register by providing their details.
+      parameters:
+      - description: User registration payload
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UserCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User successfully registered
+          schema:
+            $ref: '#/definitions/clients.SuccessRes'
+        "400":
+          description: Bad Request - Invalid input data
+          schema:
+            $ref: '#/definitions/clients.AppError'
+        "500":
+          description: Internal Server Error - Unexpected error
+          schema:
+            $ref: '#/definitions/clients.AppError'
+      summary: Register a new user
+      tags:
+      - Users
+swagger: "2.0"

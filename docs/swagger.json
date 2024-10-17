@@ -1,0 +1,649 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/items": {
+            "get": {
+                "description": "This endpoint retrieves a list of all items.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Get all items",
+                "responses": {
+                    "200": {
+                        "description": "List of items retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "This endpoint allows authenticated users to create an item.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Create a new item",
+                "parameters": [
+                    {
+                        "description": "Item creation payload",
+                        "name": "item",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ItemCreation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item successfully created",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/items/{id}": {
+            "get": {
+                "description": "This endpoint retrieves a single item by its unique identifier.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Get an item by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Item ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID format or bad request",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "This endpoint allows updating the properties of an existing item by its ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Update an item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Item ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Item update payload",
+                        "name": "item",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ItemUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input or bad request",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "This endpoint deletes an item identified by its unique ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Delete an item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Item ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID format or bad request",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "This endpoint retrieves a list of all registered users. It is accessible only to admin users.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "List of users retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "description": "This endpoint allows users to log in using their credentials and receive an authentication token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "User login payload",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.UserLogin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User successfully logged in",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid login credentials",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/register": {
+            "post": {
+                "description": "This endpoint allows new users to register by providing their details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "User registration payload",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.UserCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User successfully registered",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid input data",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "description": "This endpoint retrieves a user by their unique ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get a user by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID format or bad request",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "This endpoint deletes a user identified by their unique ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID format or bad request",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "This endpoint allows updating the properties of an existing user by their ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update a user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User update payload",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.UserUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/clients.SuccessRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input or bad request",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/clients.AppError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "clients.AppError": {
+            "type": "object",
+            "properties": {
+                "error_key": {
+                    "type": "string"
+                },
+                "log": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
+                }
+            }
+        },
+        "clients.SuccessRes": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "filter": {},
+                "paging": {}
+            }
+        },
+        "domain.ItemCreation": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.ItemUpdate": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/domain.Status"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Status": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2
+            ],
+            "x-enum-varnames": [
+                "Deleted",
+                "Active",
+                "Done"
+            ]
+        },
+        "domain.UserCreate": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.UserLogin": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.UserUpdate": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
